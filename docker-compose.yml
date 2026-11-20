@@ -1,0 +1,27 @@
+services:
+  api:
+    image: projetomlops-api:V1
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      MODEL_VERSION: ${MODEL_VERSION:-v1}
+      API_KEY: ${API_KEY:-chave-ficticia-123}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    restart: unless-stopped
+
+  page:
+    image: projetomlops-page:V1
+    build:
+      context: .
+      dockerfile: Dockerfile.page
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "${PAGE_PORT:-8501}:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped

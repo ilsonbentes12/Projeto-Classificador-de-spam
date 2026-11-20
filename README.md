@@ -63,6 +63,10 @@ tests/
 .env.example       # Modelo das variáveis de ambiente
 requirements.txt   # Dependências da aplicação
 run.py             # Inicia a API e a interface
+.streamlit/        # Configuração visual do Streamlit
+Dockerfile.api      # Empacotamento da API
+Dockerfile.page     # Empacotamento da interface
+docker-compose.yml  # Orquestração dos dois containers
 ```
 
 ## Requisitos
@@ -159,6 +163,68 @@ Interface:
 
 ```powershell
 python -m streamlit run app/page.py --server.port 8501
+```
+
+## Executar com Docker
+
+É necessário ter Docker Desktop instalado e em execução.
+
+As imagens Docker são identificadas pela tag `V1`:
+
+- API: `projetomlops-api:V1`
+- Interface: `projetomlops-page:V1`
+
+Na raiz do projeto, construa as imagens com a tag configurada no Docker Compose e
+inicie os containers:
+
+```powershell
+docker compose up --build
+```
+
+Para iniciar em segundo plano:
+
+```powershell
+docker compose up --build -d
+```
+
+Endereços:
+
+- Interface: http://localhost:8501
+- API: http://localhost:8000
+- Documentação: http://localhost:8000/docs
+
+As configurações podem ser informadas no `.env`:
+
+```text
+APP_ENV=dev
+MODEL_VERSION=v1
+API_KEY=chave-ficticia-123
+API_PORT=8000
+PAGE_PORT=8501
+```
+
+O Docker Compose também aceita os valores padrão caso `API_KEY` não esteja definida.
+
+Para recriar apenas os containers a partir das imagens `V1` existentes:
+
+```powershell
+docker compose up -d
+```
+
+Para verificar as imagens locais:
+
+```powershell
+docker image ls projetomlops-api:V1
+docker image ls projetomlops-page:V1
+```
+
+Comandos úteis:
+
+```powershell
+docker compose ps
+docker compose logs -f
+docker compose down
+docker compose down --volumes
 ```
 
 ## Usar a interface
@@ -350,3 +416,5 @@ API_HOST=127.0.0.1
 API_PORT=8001
 API_URL=http://127.0.0.1:8001
 ```
+requirements-api.txt  # Dependências exclusivas da API
+requirements-page.txt # Dependências exclusivas da interface
